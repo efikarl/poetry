@@ -1,0 +1,8 @@
+[book]
+authors         = ["efikarl"]
+language        = "zh"
+src             = "src"
+title           = "濉草汴莽"
+
+[output.html]
+additional-css  = ["./src/assets/css/poetry.css" ]
