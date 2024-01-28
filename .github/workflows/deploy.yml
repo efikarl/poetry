@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - master
+
+name: Deploy GitHub Pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install mdbook from crates.io
+        uses: baptiste0928/cargo-install@v2
+        with:
+          crate: mdbook
+      - name: gh-pages this mdbook
+        run: |
+          mdbook build
+          # create worktree
+          git worktree add /tmp/book
+          rm -rf /tmp/book/*
+          cp -rp book/* /tmp/book/
+          ls -al /tmp/book/*
+          cd /tmp/book
+          git config user.name  "CD"
+          git config user.email "CD"
+          # delete old gh-pages
+          git symbolic-ref HEAD refs/heads/gh-pages
+          # create new gh-pages
+          git add -A
+          git commit -m "latest: $GITHUB_SHA"
+          git log
+          git push --force origin HEAD:gh-pages
